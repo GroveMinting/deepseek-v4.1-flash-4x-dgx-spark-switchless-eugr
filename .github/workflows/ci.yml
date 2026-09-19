@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Normalize executable permissions
+        run: |
+          find . -type f -name '*.sh' -exec chmod +x {} +
+          find . -type f -name '*.py' -exec chmod +x {} +
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+          python -m pip install --disable-pip-version-check PyYAML==6.0.2
+      - name: Check repository
+        run: bash ./tools/check-package.sh
