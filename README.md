@@ -1,5 +1,14 @@
 # DeepSeek-V4.1-Flash on 4× DGX Spark — switchless eugr
 
+[![CI](https://github.com/GroveMinting/deepseek-v4.1-flash-4x-dgx-spark-switchless-eugr/actions/workflows/ci.yml/badge.svg)](https://github.com/GroveMinting/deepseek-v4.1-flash-4x-dgx-spark-switchless-eugr/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/GroveMinting/deepseek-v4.1-flash-4x-dgx-spark-switchless-eugr?include_prereleases&sort=semver)](https://github.com/GroveMinting/deepseek-v4.1-flash-4x-dgx-spark-switchless-eugr/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Target: 4× DGX Spark](https://img.shields.io/badge/target-4%C3%97%20DGX%20Spark-76B900?logo=nvidia&logoColor=white)](#requirements)
+[![Fabric: Switchless RoCE](https://img.shields.io/badge/fabric-switchless%20RoCE-0A66C2)](docs/NETWORKING.md)
+[![Runtime: eugr + vLLM](https://img.shields.io/badge/runtime-eugr%20%2B%20vLLM-6F42C1)](https://github.com/eugr/spark-vllm-docker)
+
+**Switchless-first · TP4 · official MXFP4 checkpoint · disk-backed Engram · fail-closed B12X qualification**
+
 Run the official
 [`deepseek-ai/DeepSeek-V4.1-Flash`](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash)
 MXFP4 checkpoint across four NVIDIA DGX Sparks using
@@ -339,4 +348,3 @@ qualification gates before production use.
 This project is licensed under the [MIT License](LICENSE). Upstream code,
 images, model weights, and binary artifacts retain their own licenses. See
 [`ATTRIBUTION.md`](ATTRIBUTION.md) and [`LICENSES/`](LICENSES/).
-
