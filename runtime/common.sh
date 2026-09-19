@@ -69,6 +69,8 @@ require_switchless_config() {
 
 remote() {
   local host=${1:?host}; shift
+  # Callers intentionally supply the remote command as expanded arguments.
+  # shellcheck disable=SC2029
   ssh "${SSH_OPTS[@]}" "$SSH_USER@$host" "$@"
 }
 
