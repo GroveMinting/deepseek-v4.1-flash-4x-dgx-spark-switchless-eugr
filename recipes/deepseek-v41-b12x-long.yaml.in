@@ -1,0 +1,47 @@
+recipe_version: "1"
+name: DeepSeek-V4.1-Flash-4x-B12X-Candidate-Long-__FABRIC_NAME__
+description: UNQUALIFIED B12X long-context candidate; TP4, eager, no speculation, 300K, C1
+model: deepseek-ai/DeepSeek-V4.1-Flash
+container: __B12X_IMAGE__
+cluster_only: true
+mods:
+  - mods/deepseek-v41-runtime-check
+  - mods/deepseek-v41-b12x-candidate-check
+defaults:
+  port: 8000
+  host: 0.0.0.0
+  tensor_parallel: 4
+  gpu_memory_utilization: 0.90
+  max_model_len: 300000
+  max_num_seqs: 1
+  max_num_batched_tokens: 8192
+env:
+__FABRIC_ENV__
+  DSV41_RUNTIME_LANE: "b12x-candidate"
+  DSV41_ALLOW_UNQUALIFIED_B12X: "__B12X_OPT_IN__"
+  DSV41_EXPECTED_MODEL_REVISION: "__MODEL_REVISION__"
+  VLLM_ENGRAM_TABLE_MEMORY: "disk"
+  DSV41_ENGRAM_DIR: "__ENGRAM_DIR__"
+  CUTE_DSL_ARCH: "sm_121a"
+  VLLM_USE_B12X_WO_PROJECTION: "1"
+  VLLM_USE_B12X_MHC: "1"
+  VLLM_USE_B12X_FP8_GEMM: "1"
+  VLLM_USE_B12X_MOE: "1"
+  VLLM_USE_B12X_SPARSE_INDEXER: "1"
+  B12X_MLA_SM120_UNIFIED: "1"
+  B12X_MOE_FORCE_A8: "1"
+command: |
+  vllm serve deepseek-ai/DeepSeek-V4.1-Flash \
+    --revision __MODEL_REVISION__ \
+    --served-model-name deepseek-v4.1-flash \
+    --host {host} --port {port} --trust-remote-code \
+    --tensor-parallel-size {tensor_parallel} \
+    --gpu-memory-utilization {gpu_memory_utilization} \
+    --max-model-len {max_model_len} --max-num-seqs {max_num_seqs} \
+    --max-num-batched-tokens {max_num_batched_tokens} \
+    --load-format safetensors --block-size 256 --enforce-eager \
+    --attention-backend B12X --moe-backend b12x --linear-backend b12x \
+    --limit-mm-per-prompt '{{"image":4}}' --mm-processor-cache-gb 1 \
+    --tool-call-parser deepseek_v41 --enable-auto-tool-choice \
+    --reasoning-parser deepseek_v41 \
+    --default-chat-template-kwargs '{{"thinking":false}}'

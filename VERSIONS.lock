@@ -1,0 +1,38 @@
+# shellcheck shell=bash
+# Authoritative, reviewed inputs. Shell syntax is intentional.
+
+EUGR_REPOSITORY="https://github.com/eugr/spark-vllm-docker.git"
+EUGR_COMMIT="acd5d2a253704ad71096c5f23ac45e7cf57442af"
+
+MODEL_ID="deepseek-ai/DeepSeek-V4.1-Flash"
+MODEL_REVISION="dba1be0a40aa45a94ad051997016db3960a90277"
+MODEL_EXPECTED_SHARDS="48"
+
+# Tony boot10-derived baseline. Whole-file patches must match this tree.
+VLLM_COMMIT="e47aa780bccf59f59dfa2cbb18e17a10b4fe69ba"
+VLLM_BASE_IMAGE="vllm/vllm-openai:nightly-8a728663c1c3eeace834a95f5654fa653cc1998c"
+FLASHINFER_COMMIT="07869c61ba581e6d6b8ad8d142f4a6c89b707cc1"
+CUTLASS_COMMIT="b46b16d003484063bca4ed365e44095c4c6ed633"
+CCCL_COMMIT="16bd510c9b712e82b0ab6cbb630d8e29ba1f7116"
+SPDLOG_COMMIT="c3aed4b68373955e1cc94307683d44dca1515d2b"
+BASELINE_IMAGE="vllm-dsv41-switchless-eugr:boot10"
+
+# Acquisition source for the published build/patch tooling. The resolved commit
+# and content hashes are recorded during setup; vLLM itself remains locked above.
+TONY_REPOSITORY="https://github.com/tonyd2wild/DeepSeek-V4.1-Flash-vLLM-DGX-Spark.git"
+TONY_REF="main"
+TONY_PATCHSET="dsv41-boot10"
+
+# Canonical prebuilt switchless NCCL release for CUDA 13 / ARM64 / SM121.
+SWITCHLESS_NCCL_VERSION="v0.0.1"
+SWITCHLESS_NCCL_ARCHIVE="nccl-2.30.7-switchless-hardened-sm121-linux-arm64.tar.gz"
+SWITCHLESS_NCCL_URL="https://github.com/alexellis/switchless-nccl/releases/download/v0.0.1/nccl-2.30.7-switchless-hardened-sm121-linux-arm64.tar.gz"
+SWITCHLESS_NCCL_ARCHIVE_SHA256="b4a686382a92e57b485ca1bf7cd0f9fde780a68f01ea902ac432b60505b2041f"
+SWITCHLESS_NCCL_LIBRARY_SHA256="78cb83871792ec57d763d142e4cae26fc754ae284bcc81dcb2a7d50e17d4fa57"
+
+# B12X is intentionally moving until four-Spark V4.1 qualification completes.
+# Setup records exact resolved commits and image digest in a candidate receipt.
+B12X_REPOSITORY="https://github.com/local-inference-lab/b12x.git"
+B12X_REF="master"
+B12X_IMAGE="vllm-dsv41-switchless-eugr:b12x-candidate"
+B12X_QUALIFICATION_STATE="UNQUALIFIED"

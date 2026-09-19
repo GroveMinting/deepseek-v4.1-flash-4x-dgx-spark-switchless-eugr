@@ -1,0 +1,34 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+ARG RUNTIME_LANE
+ARG MODEL_REVISION
+ARG VLLM_COMMIT
+ARG UPSTREAM_COMMIT
+
+COPY patch/ /tmp/dsv41-patch/
+COPY nccl/libnccl.so.2 /opt/nccl-switchless/libnccl.so.2
+COPY engram_local.py /opt/dsv41/engram_local.py
+
+RUN set -eux; \
+    cd /tmp/dsv41-patch; sha256sum -c SHA256SUMS; cd /; \
+    root="$(python -c 'import pathlib,vllm; print(pathlib.Path(vllm.__file__).resolve().parent)')"; \
+    install -D -m 0644 /tmp/dsv41-patch/engram.py "$root/models/deepseek_v4_1/common/engram.py"; \
+    install -D -m 0644 /tmp/dsv41-patch/model_state.py "$root/models/deepseek_v4_1/nvidia/model_state.py"; \
+    install -D -m 0644 /tmp/dsv41-patch/weight_utils.py "$root/model_executor/model_loader/weight_utils.py"; \
+    install -D -m 0644 /tmp/dsv41-patch/attention.py "$root/models/deepseek_v4_1/attention.py"; \
+    install -D -m 0644 /tmp/dsv41-patch/flashinfer_sparse.py "$root/models/deepseek_v4_1/nvidia/flashinfer_sparse.py"; \
+    install -D -m 0644 /tmp/dsv41-patch/sparse_swa.py "$root/v1/attention/backends/mla/sparse_swa.py"; \
+    install -D -m 0644 /tmp/dsv41-patch/sparse_attn_indexer.py "$root/model_executor/layers/sparse_attn_indexer.py"; \
+    python -m compileall -q "$root/models/deepseek_v4_1"; \
+    test "$(sha256sum /opt/nccl-switchless/libnccl.so.2 | awk '{print $1}')" = 78cb83871792ec57d763d142e4cae26fc754ae284bcc81dcb2a7d50e17d4fa57; \
+    printf 'RUNTIME_LANE=%s\nMODEL_REVISION=%s\nVLLM_COMMIT=%s\nUPSTREAM_COMMIT=%s\n' \
+      "$RUNTIME_LANE" "$MODEL_REVISION" "$VLLM_COMMIT" "$UPSTREAM_COMMIT" \
+      > /opt/dsv41/runtime.env; \
+    cp /tmp/dsv41-patch/SHA256SUMS /opt/dsv41/PATCHES.sha256; \
+    rm -rf /tmp/dsv41-patch
+
+LABEL org.opencontainers.image.title="DeepSeek-V4.1-Flash four-Spark switchless eugr runtime" \
+      org.opencontainers.image.description="Pinned switchless TP4 runtime for four NVIDIA DGX Sparks" \
+      org.opencontainers.image.source="https://github.com/GroveMinting/deepseek-v4.1-flash-4x-dgx-spark-switchless-eugr" \
+      org.opencontainers.image.licenses="MIT"

@@ -1,0 +1,14 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+ARG MODEL_REVISION
+ARG SOURCE_IMAGE_ID
+COPY nccl/libnccl.so.2 /opt/nccl-switchless/libnccl.so.2
+RUN set -eux; \
+    test "$(sha256sum /opt/nccl-switchless/libnccl.so.2 | awk '{print $1}')" = 78cb83871792ec57d763d142e4cae26fc754ae284bcc81dcb2a7d50e17d4fa57; \
+    mkdir -p /opt/dsv41; \
+    printf 'RUNTIME_LANE=b12x-candidate\nMODEL_REVISION=%s\nVLLM_COMMIT=unresolved-candidate\nUPSTREAM_COMMIT=%s\n' \
+      "$MODEL_REVISION" "$SOURCE_IMAGE_ID" > /opt/dsv41/runtime.env
+LABEL org.opencontainers.image.title="UNQUALIFIED DeepSeek-V4.1 switchless B12X candidate" \
+      org.opencontainers.image.description="Fail-closed B12X qualification image for the four-Spark switchless path" \
+      org.opencontainers.image.source="https://github.com/GroveMinting/deepseek-v4.1-flash-4x-dgx-spark-switchless-eugr" \
+      org.opencontainers.image.licenses="MIT"
