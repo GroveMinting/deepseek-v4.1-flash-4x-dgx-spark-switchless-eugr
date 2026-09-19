@@ -1,0 +1,13 @@
+config/cluster.env
+config/engram-ranges
+build/
+vendor/
+rendered-recipes/
+.resolved-refs
+.receipts/
+__pycache__/
+*.pyc
+*.tar
+*.tar.gz
+*.zip
+SHA256SUMS
