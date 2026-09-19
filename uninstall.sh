@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
-ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 EUGR=${1:-}
 [[ -n "$EUGR" ]] || { echo "usage: $0 /path/to/spark-vllm-docker" >&2; exit 2; }
 EUGR=$(cd "$EUGR" && pwd)
